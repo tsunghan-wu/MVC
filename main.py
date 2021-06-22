@@ -1,10 +1,11 @@
-from utils import read_image, get_srcCenter, get_trgCenter, get_curve
+from utils import read_image, write_image, get_srcCenter, get_trgCenter, get_curve
 from mvc import MVC_Cloner
 
 
 if __name__ == "__main__":
     src_fname = "images/airplane_src.jpg"
     dst_fname = "images/sky.jpeg"
+    output_fname = "images/output.png"
     src_image = read_image(src_fname)
     dst_image = read_image(dst_fname)
 
@@ -16,3 +17,4 @@ if __name__ == "__main__":
     # Run MVC algorithm
     cloner = MVC_Cloner()
     output = cloner.process(src_image, dst_image, src_center, dst_center, curve)
+    write_image(output_fname, output)

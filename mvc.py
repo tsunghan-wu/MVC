@@ -49,14 +49,12 @@ class MVC_Cloner:
         D = np.zeros((N, 3))
         for i, src_x in enumerate(curve):
             trg_x = src_x + translation
-            print(trg_x)
             f_pi = src_image[src_x[1], src_x[0]]
             g_pi = dst_image[trg_x[1], trg_x[0]]
-            D[i] = f_pi - g_pi
+            D[i] = g_pi - f_pi
         return D
 
     def process(self, src_image, dst_image, src_center, dst_center, curve):
-        output_image = dst_image.copy()
         translation = dst_center - src_center
 
         coordinate_X = self.preprocess(src_image, curve)
@@ -66,10 +64,15 @@ class MVC_Cloner:
         src_mask = cv2.cvtColor(src_mask, cv2.COLOR_BGR2GRAY)
         contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours = contours[0].squeeze(1)
+        src_image = src_image.astype(np.float32) / 255
+        dst_image = dst_image.astype(np.float32) / 255
+        output_image = dst_image.copy()
         diff = self.count_diff(contours, translation, src_image, dst_image)
         for x in coordinate_X:
             L = self.solve_mvc(x, contours)
             trg_x = x + translation
-            r_x = np.sum(L * diff, axis=0).astype(np.uint8)
-            output_image[int(trg_x[1]), int(trg_x[0])] += r_x
-        cv2.imwrite("output.png", output_image)
+            r_x = np.sum(L * diff, axis=0)
+            output_image[int(trg_x[1]), int(trg_x[0])] = src_image[x[1], x[0]] + r_x
+        # prevent overflow
+        final_output = (np.clip(output_image, 0.0, 1.0) * 255).astype(np.uint8)
+        return final_output

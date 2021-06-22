@@ -7,6 +7,10 @@ def read_image(fname):
     return image
 
 
+def write_image(fname, image):
+    cv2.imwrite(fname, image)
+
+
 def get_curve(src_image):
     poly = np.array([[5, 110], [15, 140], [200, 175], [375, 150], [399, 125], [350, 60], [50, 75]], np.int32)
     return poly
