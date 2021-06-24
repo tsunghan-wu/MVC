@@ -15,6 +15,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
         <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
         <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='upload.js') }}"></script>
@@ -42,23 +44,32 @@
         <div class="description">
             <h1>Welcome to use our MVC Image Cloning!</h1>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque interdum quam odio, quis placerat ante luctus eu. Sed aliquet dolor id sapien rutrum, id vulputate quam iaculis. Suspendisse consectetur mi id libero fringilla, in pharetra sem ullamcorper.</p>
-        <button class="btn btn-outline-secondary btn-lg">Try Now!</button>
+        <button class="btn btn-outline-secondary btn-lg" type="button" onclick="doScrolling('#step1', 500)">Try Now!</button>
         </div>
     </header>
 
-    <div class="container features">
+    <div class="container features" id="step1">
         <div class="row">
             <div class="col">
                 <h3 class="feature-title" style="text-align: center;">Upload Source Image</h3>
+                <!-- <form action="/upload" enctype="multipart/form-data" method="post">
                 <input type="file" 
                     class="filepond"
-                    name="filepond"
+                    name="src_img"
                     accept="image/png, image/jpeg, image/gif"/>
+                <input type="submit", value="upload">
+
+                <input type="file" 
+                    name="src_img"
+                    accept="image/png, image/jpeg, image/gif"/>
+                <input type="submit", value="upload OAOAO">
+                </form> -->
                 <script>
                     // Get a reference to the file input element
                     FilePond.registerPlugin(
                         FilePondPluginFileValidateType,
-                        // FilePondPluginImageExifOrientation,
+                        FilePondPluginImageValidateSize,
+                        FilePondPluginImageExifOrientation,
                         FilePondPluginImagePreview,
                         // FilePondPluginImageCrop,
                         // FilePondPluginImageResize,
@@ -84,10 +95,50 @@
             </div>
             <div class="col">
                 <h3 class="feature-title" style="text-align: center;">Upload Target Image</h3>
+                <input type="file" 
+                    class="filepond"
+                    name="trg_img"
+                    accept="image/png, image/jpeg, image/gif"/>
+                <script>
+                    // Get a reference to the file input element
+                    FilePond.registerPlugin(
+                        FilePondPluginFileValidateType,
+                        FilePondPluginImageValidateSize,
+                        FilePondPluginImageExifOrientation,
+                        FilePondPluginImagePreview,
+                        // FilePondPluginImageCrop,
+                        // FilePondPluginImageResize,
+                        // FilePondPluginImageTransform,
+                        // FilePondPluginImageEdit
+                    );
+
+                    // Select the file input and use 
+                    // create() to turn it into a pond
+                    FilePond.create(
+                      document.querySelector('input'),
+                      {
+                        labelIdle: `Drag & Drop your picture or <span class="filepond--label-action">Browse</span>`,
+                        imagePreviewHeight: 50,
+                        stylePanelLayout: 'compact circle',
+                        styleLoadIndicatorPosition: 'center bottom',
+                        styleProgressIndicatorPosition: 'right bottom',
+                        styleButtonRemoveItemPosition: 'left bottom',
+                        styleButtonProcessItemPosition: 'right bottom',
+                      }
+                    );
+                </script> 
+            </div>
+        </div>
+            <!-- <button type="submit" class="btn btn-outline-success" style="float: right;">Next Step &#8594;</button> -->
+    </div>
+    <h1>test</h1>
+    <div class="container features">
+        <div class="row">
+            <div class="col">
+                
             </div>
         </div>
     </div>
-
     </body>
     
 </html>
