@@ -2,6 +2,7 @@ import flask
 import base64
 import numpy as np
 import cv2
+import os
 
 # Initialize the useless part of the base64 encoded image.
 init_Base64 = 21
@@ -12,6 +13,7 @@ label_dict = {0: 'Cat', 1: 'Giraffe', 2: 'Sheep', 3: 'Bat', 4: 'Octopus', 5: 'Ca
 # Initializing new Flask instance. Find the html template in "templates".
 app = flask.Flask(__name__, template_folder='templates')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
+app.config['UPLOAD_FOLDER'] = 'upload_images'
 
 
 # First route : Render the initial drawing template
@@ -20,15 +22,22 @@ def index():
     return flask.render_template('index.html')
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = flask.request.files['src_file']
-    filename = "src_upload.jpg"
+@app.route('/upload_src', methods=['POST'])
+def upload_src():
+    print(flask.request, flush=True)
+    file = flask.request.files['src_img']
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
     file.save(filename)
-    file = flask.request.files['src_file']
-    filename = "src_upload.jpg"
+    return flask.make_response("Success", 201)
+
+
+@app.route('/upload_dst', methods=['POST'])
+def upload_dst():
+    print(flask.request, flush=True)
+    file = flask.request.files['dst_img']
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
     file.save(filename)
-    return flask.redirect(flask.url_for('draw'))
+    return flask.make_response("Success", 201)
 
 
 @app.route('/draw')
