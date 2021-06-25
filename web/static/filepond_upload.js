@@ -36,3 +36,28 @@ FilePond.create(
         },
     }
 );
+
+
+$(document).ready(function () {
+    console.log("in the function");
+    setTimeout(checkFile, 500);
+
+    function checkFile() {
+        $.ajax({
+            url: './checkfile',
+            type: 'GET',
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data.success);
+                if (data.success == true) { // or whatever you want the response to be
+                    $('#to_step2').show();
+                }
+                else {
+                    $('#to_step2').hide();
+                    setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this running too often
+                }
+            }
+        });
+    };
+});

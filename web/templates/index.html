@@ -72,7 +72,9 @@
                 </form>
             </div>
         </div>
-        <button class="btn btn-outline-success" type="button" style="float: right" onclick="doScrolling('#step2', 500)">Next Step &#8594;</button>
+        <div class="row float-right mt-3 mb-3">
+        <button class="btn btn-outline-success" id="to_step2" type="button" style="display: none;" onclick="doScrolling('#step2', 500)">Next Step &#8594;</button>
+        </div>
     </div>
     <div class="container features" id="step2">
         <div class="row">
@@ -81,7 +83,7 @@
             </div>
         </div>
     </div>
-
+    <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='filepond_upload.js') }}"></script>
     </body>
     

@@ -3,6 +3,7 @@ import base64
 import numpy as np
 import cv2
 import os
+import json
 
 # Initialize the useless part of the base64 encoded image.
 init_Base64 = 21
@@ -19,6 +20,13 @@ app.config['UPLOAD_FOLDER'] = 'upload_images'
 # First route : Render the initial drawing template
 @app.route('/', methods=['GET'])
 def index():
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
+    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
+    if os.path.exists(srcfname):
+        os.remove(srcfname)
+    if os.path.exists(dstfname):
+        os.remove(dstfname)
     return flask.render_template('index.html')
 
 
@@ -38,6 +46,18 @@ def upload_dst():
     filename = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
     file.save(filename)
     return flask.make_response("Success", 201)
+
+
+@app.route('/checkfile', methods=['GET'])
+def checkfile():
+    print("checkfile", flush=True)
+    srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
+    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
+    if os.path.exists(srcfname) and os.path.exists(dstfname):
+        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+    else:
+        return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+        # return flask.make_response("Success", 201)
 
 
 @app.route('/draw')
