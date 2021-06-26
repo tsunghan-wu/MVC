@@ -131,7 +131,8 @@ class MVC_ClonerFast:
         src_mask = np.zeros(src_img.shape, src_img.dtype)
         cv2.fillPoly(src_mask, [curve], (255, 255, 255))
         src_mask = cv2.cvtColor(src_mask, cv2.COLOR_BGR2GRAY)
-        contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        # contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         contours = contours[0].squeeze(1)
         print('Contours:', contours.shape)
 

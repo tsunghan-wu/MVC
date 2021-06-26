@@ -88,3 +88,15 @@ body {
 .filepond--root .filepond--drop-label {
   height: 400px;
 }
+
+/* Adding cursor just works: */
+.disabled {
+    cursor: not-allowed;
+    color: gray !important;
+    background: transparent !important;
+}
+
+/* Makes link non-clickable: */
+.disabled:active {
+    pointer-events: none;
+}

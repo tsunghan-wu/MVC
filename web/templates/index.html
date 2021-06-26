@@ -51,7 +51,7 @@
         </div>
     </header>
 
-    <div class="container features" id="step1">
+    <div class="container features" id="step1" style="height: 100vh">
         <!-- <p class="h1">Step #1: Upload Images</p> -->
         <div class="row">
             <div class="col">
@@ -76,11 +76,11 @@
             </div>
         </div>
         <div class="row float-right mt-3 mb-3">
-        <button class="btn btn-outline-success" id="to_step2" type="button" style="display: none;" 
+        <button class="btn btn-outline-success disabled" id="to_step2" type="button" 
             onclick="clear_canvas(); doScrolling('#step2', 500)">Next Step &#8594;</button>
         </div>
     </div>
-    <div class="container features" id="step2" style="height: 500px">
+    <div class="container features" id="step2" style="height: 100vh">
         <div class="row" style="height: 50px">
             <div class="col">
                 <h3 class="feature-title" style="text-align: center;">Source Patch Selection</h3>
@@ -116,7 +116,7 @@
             </div>
             <div class="col-auto mt-3 mb-3">
                 <div>
-                    <button class="btn btn-success" onclick="finish_transform()">Processing &#8594;</button>
+                    <button id="to_step3" class="btn btn-success disabled" onclick="finish_transform()">Processing &#8594;</button>
                 </div>
             </div>
         </div>
