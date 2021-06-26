@@ -1,6 +1,7 @@
 import os
 import json
 import flask
+from imgedit import crop_src_patch, prepare
 
 
 # Initializing new Flask instance. Find the html template in "templates".
@@ -14,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = 'static/data'
 def index():
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
-    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
+    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "tar.png")
     if os.path.exists(srcfname):
         os.remove(srcfname)
     if os.path.exists(dstfname):
@@ -35,7 +36,7 @@ def upload_src():
 def upload_dst():
     print(flask.request, flush=True)
     file = flask.request.files['dst_img']
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], "tar.png")
     file.save(filename)
     return flask.make_response("Success", 201)
 
@@ -44,11 +45,18 @@ def upload_dst():
 def checkfile():
     print("checkfile", flush=True)
     srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
-    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "dst.png")
+    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "tar.png")
     if os.path.exists(srcfname) and os.path.exists(dstfname):
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
     else:
         return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+
+
+@app.route('/crop', methods=['POST'])
+def crop():
+    info = flask.request.get_json()
+    crop_src_patch(info['perimeter'], info['width'], info['height'])
+    return ''
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
-var stageW = 640; // window.innerWidth;
-var stageH = 300; // window.innerHeight;
+var stageW = window.innerWidth * 0.4;
+var stageH = 300;
 var stage = new Konva.Stage({
     container: 'konva',
     width: stageW,
@@ -92,9 +92,7 @@ function draw_tar(tar_obj) {
 }
 
 
-function start_konva(width, height) {
-    stageW = width;
-    stageH = height;
+function start_konva() {
     tar_obj.src = 'static/data/tar.png';
     src_obj.src = 'static/data/patch.png';
     stage.add(layer);
