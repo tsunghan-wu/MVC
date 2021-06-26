@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 
-from config import *
 from imgedit import crop_src_patch, prepare
 from mvc import MVC_Cloner
 
@@ -11,13 +10,7 @@ cloner = MVC_Cloner()
 
 @app.route('/')
 def home():
-    args = {
-        'jpoly_width': JPOLY_WIDTH,
-        'jpoly_height': JPOLY_HEIGHT,
-        'konva_width': KONVA_WIDTH,
-        'konva_height': KONVA_HEIGHT,
-    }
-    return render_template('example.html', **args)
+    return render_template('example.html')
 
 
 @app.route('/crop', methods=['POST'])
