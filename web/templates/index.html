@@ -4,10 +4,13 @@
         <title>VFX Final Project: MVC Image Cloning</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
         <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet" />
         <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet"/>
+        <script src="https://unpkg.com/konva@8.0.4/konva.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+        <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='upload.css') }}"> -->
     </head>
     <body>
@@ -76,15 +79,52 @@
         <button class="btn btn-outline-success" id="to_step2" type="button" style="display: none;" onclick="doScrolling('#step2', 500)">Next Step &#8594;</button>
         </div>
     </div>
-    <div class="container features" id="step2">
-        <div class="row">
+    <div class="container features" id="step2" style="height: 500px">
+        <div class="row" style="height: 50px">
             <div class="col">
-                
+                <h3 class="feature-title" style="text-align: center;">Source Patch Selection</h3>
+                <p>Press <strong>Left Click</strong> to draw a point.</p>
+                <p><strong>CTRL+Click</strong> or <strong>Right Click</strong> to close the polygon.</p>
+            </div>
+            <div class="col">
+                <h3 class="feature-title" style="text-align: center;">Target Position Decision</h3>
+                <p>Drag / Scale / Rotate the image patch to the desired position.</p>
+                <p>Click the "Processing &#8594;" button when the target position is determined.</p>
+            </div>
+        </div>
+        <div class="row" style="height: 400px">
+            <!-- <canvas id="jPolygon" width="{{ jpoly_width }}" height="{{ jpoly_height }}" -->
+            <div class="col">
+                <canvas id="jPolygon" width="100%" height="auto"
+                    style="cursor:crosshair" 
+                    background="{{ url_for('static', filename='src_upload.jpg') }}"
+                    onmousedown="point_it(event)" oncontextmenu="return false;">
+                    Your browser does not support the HTML5 canvas tag.
+                </canvas>
+            </div>
+            <div class="col" id="konva">
+                <!-- this is the target image -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col float-center mt-3 mb-3">
+                <button class="btn btn-primary" onclick="undo()">Undo</button>
+                <button class="btn btn-danger" onclick="clear_canvas()">Clear</button>
+                <button class="btn btn-success" onclick="send_vertices(); 
+                    start_konva({{ konva_width }}, {{ konva_height }})">Done</button>
+                <!-- <p><strong>Coordinates:</strong></p>
+                <textarea id="coordinates" disabled="disabled" style="width:300px; height:200px;"></textarea> -->
+            </div>
+            <div class="col ml-auto mt-3 mb-3">
+                <div>
+                    <button class="btn btn-success" onclick="finish_transform()">Processing &#8594;</button>
+                </div>
             </div>
         </div>
     </div>
-    <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='filepond_upload.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jPolygon.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
     
 </html>
