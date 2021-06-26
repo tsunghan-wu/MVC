@@ -96,6 +96,8 @@ function start_konva() {
     tar_obj.src = 'static/data/tar.png';
     src_obj.src = 'static/data/patch.png';
     stage.add(layer);
+    $('#to_step3').removeClass('disabled');
+
 }
 
 
