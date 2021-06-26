@@ -2,12 +2,15 @@ import os
 import json
 import flask
 from imgedit import crop_src_patch, prepare
+from mvc import MVC_ClonerFast
 
 
 # Initializing new Flask instance. Find the html template in "templates".
 app = flask.Flask(__name__, template_folder='templates')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.config['UPLOAD_FOLDER'] = 'static/data'
+
+cloner = MVC_ClonerFast()
 
 
 # First route : Render the initial drawing template
@@ -56,6 +59,18 @@ def checkfile():
 def crop():
     info = flask.request.get_json()
     crop_src_patch(info['perimeter'], info['width'], info['height'])
+    return ''
+
+
+@app.route('/clone', methods=['POST'])
+def clone():
+    src, tar, bndry, pos = prepare(flask.request.get_json())
+    output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2], 
+        pos, bndry)
+
+    import cv2
+    cv2.imwrite('test.png', output)
+
     return ''
 
 

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 
 from imgedit import crop_src_patch, prepare
-from mvc import MVC_Cloner
+from mvc_bak import MVC_Cloner
 
 
 app = Flask(__name__, template_folder='templates')
