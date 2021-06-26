@@ -62,9 +62,8 @@ class MVC_Cloner:
         src_mask = np.zeros(src_image.shape, src_image.dtype)
         cv2.fillPoly(src_mask, [curve], (255, 255, 255))
         src_mask = cv2.cvtColor(src_mask, cv2.COLOR_BGR2GRAY)
-        # contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        # contours = contours[0].squeeze(1)
-        contours = curve
+        contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours = contours[0].squeeze(1)
 
         img = src_image.copy()
         for p in contours:
@@ -76,7 +75,8 @@ class MVC_Cloner:
         output_image = dst_image.copy()
         diff = self.count_diff(contours, translation, src_image, dst_image)
 
-        print(coordinate_X.shape)
+        mvc = np.empty((len(contours), len(coordinate_X)))
+
         for x in coordinate_X:
             L = self.solve_mvc(x, contours)
             trg_x = x + translation
@@ -85,3 +85,10 @@ class MVC_Cloner:
         # prevent overflow
         final_output = (np.clip(output_image, 0.0, 1.0) * 255).astype(np.uint8)
         return final_output
+
+    def rad(self, v1, v2):
+        norm1 = np.linalg.norm(v1, axis=1)
+        norm2 = np.linalg.norm(v2, axis=1)
+        cos = (v1 * v2).sum(axis=1) / norm1 / norm2
+        
+        return np.arccos(np.clip(cos, -1, 1))

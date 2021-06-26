@@ -13,9 +13,7 @@
     </head>
     <body onload="clear_canvas()">
         <div style="float:left">
-            <canvas id="jPolygon" width="{{ jpoly_width }}" height="{{ jpoly_height }}" 
-                style="cursor:crosshair" 
-                background="{{ url_for('static', filename='data/src.png') }}"
+            <canvas id="jPolygon" style="cursor:crosshair" 
                 onmousedown="point_it(event)" oncontextmenu="return false;">
                 Your browser does not support the HTML5 canvas tag.
             </canvas>
