@@ -7,10 +7,17 @@ import numpy as np
 from config import *
 
 
-def crop_poly(img, boundaries, max_w=JPOLY_WIDTH, max_h=JPOLY_HEIGHT, fit=True):
+def fit(img, boundary):
+    xmin, ymin = boundary.min(axis=0)
+    xmax, ymax = boundary.max(axis=0)
+
+    return img[ymin:ymax, xmin:xmax]
+
+
+def crop_poly(img, boundary, max_w, max_h, add_alpha=True, tight=True):
     """Args:
     img (np.array): source img to be cropped
-    boundaries ([(x, y)]): a list of coordinates
+    boundary ([(x, y)]): an array of points
 
     Return:
     img (np.array): cropped img
@@ -23,33 +30,33 @@ def crop_poly(img, boundaries, max_w=JPOLY_WIDTH, max_h=JPOLY_HEIGHT, fit=True):
     if h > max_h:
         img = cv2.resize(img, (int(max_h/h*w), max_h))
 
-    bndry = boundaries
-
-    xmin, xmax = boundaries[:, 0].min(), boundaries[:, 0].max()
-    ymin, ymax = boundaries[:, 1].min(), boundaries[:, 1].max()
     mask = np.zeros_like(img)
-    mask = cv2.fillPoly(mask, [np.int32(bndry)], (255, 255, 255))
-    alpha = np.where(mask.sum(axis=2), 255, 0)
+    mask = cv2.fillPoly(mask, [np.int32(boundary)], (255, 255, 255))
     img = img * mask.astype(bool)
-    img = np.dstack([img, alpha])
 
-    if fit:
-        img = img[ymin:ymax, xmin:xmax]
+    if add_alpha:
+        alpha = np.where(mask.sum(axis=2), 255, 0)
+        img = np.dstack([img, alpha])
+    if tight:
+        img = fit(img, boundary)
 
     return img
 
 
-def crop_src_patch(cors, dir_path='static/data', src_name='src.png', patch_name='patch.png'):
+def crop_src_patch(cors, width, height, dir_path='static/data', 
+                   src_name='src.png', patch_name='patch.png'):
     """Args:
-    dir_path (str)
     cors ([{'x': int, 'y':int}])
+    width (int)
+    height (int)
+    dir_path (str)
 
     Return:
     size (int, int): width, height
     """
     img = cv2.imread(os.path.join(dir_path, src_name))
     bndry = np.array([[cor['x'], cor['y']] for cor in cors])
-    img = crop_poly(img, bndry)
+    img = crop_poly(img, bndry, width, height)
     cv2.imwrite(os.path.join(dir_path, patch_name), img)
 
 
@@ -98,28 +105,34 @@ def prepare(info, dir_path='static/data', src_name='src.png',
         tar_size: tar patch size ({'width': int, 'height': int})
     """
     tar = cv2.imread(os.path.join(dir_path, tar_name))
-    sx = tar.shape[1] / info['src_size']['width']
-    sy = tar.shape[0] / info['src_size']['height']
+    tx = tar.shape[1] / info['tar_size']['width']
+    ty = tar.shape[0] / info['tar_size']['height']
 
     src = cv2.imread(os.path.join(dir_path, src_name))
     patch = cv2.imread(os.path.join(dir_path, patch_name))
+
     bndry = np.array([[per['x'], per['y']] for per in info['perimeter']])
-    bndry = bndry * (src.shape[0]/patch.shape[0], src.shape[1]/patch.shape[1])
-    patch = crop_poly(src, bndry, src.shape[1], src.shape[0])
+    bx = src.shape[1] / info['cavs_width']
+    by = src.shape[0] / info['cavs_height']
+    bndry = bndry * np.array([bx, by])
+
+    crp_shape = bndry.max(axis=0) - bndry.min(axis=0)
+    sx = info['src_size']['width'] / crp_shape[0] * tx
+    sy = info['src_size']['height'] / crp_shape[1] * ty
+    src = cv2.resize(src, None, fx=sx, fy=sy)
+
+    bndry = np.int32(bndry * np.array([sx, sy]))
+    src = crop_poly(src, bndry, src.shape[1], src.shape[0], add_alpha=False, tight=True)
     bndry = bndry - bndry.min(axis=0)
+    center = np.array(src.shape[:2][::-1]) / 2
 
-    src_width, src_height = info['src_size']['width'], info['src_size']['height']
-    sw = src_width * sx
-    sh = src_height * sy
-    patch = cv2.resize(patch, (int(sw), int(sh)))
-    bndry = bndry * np.array([sw/patch.shape[1], sh/patch.shape[0]])
+    patch, bndry = rotate(src, bndry, -info['rot'])
 
-    patch, bndry = rotate(patch, bndry, -info['rot'])
-    # src = crop_poly(src, bndry, src.shape[1], src.shape[0], fit=False)
+    pos = np.array([info['pos']['x'], info['pos']['y']])
+    pos = pos * np.array([tx, ty])
 
-    
-    # tar = cv2.resize(tar, (info['tar_size']['width'], info['tar_size']['height']))
+    M = cv2.getRotationMatrix2D((0, 0), -info['rot'], 1.)
+    center = -np.matmul(-center, M[:,:2].T)
+    pos = np.array([info['pos']['x']*tx, info['pos']['y']*ty]) + center
 
-    pos = np.array([info['pos']['x'], info['pos']['y']]) + \
-        np.array([src.shape[1], src.shape[0]]) // 2
     return patch[:,:,:3].astype(np.uint8), tar, bndry, pos.astype(int)

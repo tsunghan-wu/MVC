@@ -22,7 +22,8 @@ def home():
 
 @app.route('/crop', methods=['POST'])
 def crop():
-    crop_src_patch(request.get_json())
+    info = request.get_json()
+    crop_src_patch(info['perimeter'], info['width'], info['height'])
     return ''
 
 
@@ -35,8 +36,12 @@ def clone():
     print(src.shape, tar.shape, pos)
     img = src.copy()
     for p in bndry:
-        img = cv2.circle(img, p, radius=1, color=(0, 0, 255))
+        img = cv2.circle(img, p, radius=2, color=(0, 0, 255))
+
     cv2.imwrite('tr.png', img)
+    tar = cv2.circle(tar, pos, radius=2, color=(255, 0, 0))
+    # tar = cv2.circle(tar, pos+center, radius=2, color=(255, 0, 0))
+    cv2.imwrite('tart.png', tar)
     output = cloner.process(src, tar, np.array([src.shape[1]//2, src.shape[0]//2]), pos, 
         np.int32(bndry))
 
