@@ -4,8 +4,6 @@ import os
 import cv2
 import numpy as np
 
-from config import *
-
 
 def fit(img, boundary):
     xmin, ymin = boundary.min(axis=0)
@@ -31,7 +29,7 @@ def crop_poly(img, boundary, max_w, max_h, add_alpha=True, tight=True):
         img = cv2.resize(img, (int(max_h/h*w), max_h))
 
     mask = np.zeros_like(img)
-    mask = cv2.fillPoly(mask, [np.int32(boundary)], (255, 255, 255))
+    mask = cv2.fillPoly(mask, [boundary], (255, 255, 255))
     img = img * mask.astype(bool)
 
     if add_alpha:
@@ -91,7 +89,7 @@ def rotate(src, points, angle, scale=1.):
     ps = points - np.array([w*0.5, h*0.5])
     ps = np.matmul(ps, rot_mat[:,:2].T) + np.array([nw/2, nh/2])
 
-    return img, ps.astype(int)
+    return img, ps.round().astype(int)
 
 
 def prepare(info, dir_path='static/data', src_name='src.png', 
@@ -121,18 +119,18 @@ def prepare(info, dir_path='static/data', src_name='src.png',
     sy = info['src_size']['height'] / crp_shape[1] * ty
     src = cv2.resize(src, None, fx=sx, fy=sy)
 
-    bndry = np.int32(bndry * np.array([sx, sy]))
-    src = crop_poly(src, bndry, src.shape[1], src.shape[0], add_alpha=False, tight=True)
+    bndry = bndry * np.array([sx, sy])
+    src = fit(src, np.int32(bndry.round()))
     bndry = bndry - bndry.min(axis=0)
-    center = np.array(src.shape[:2][::-1]) / 2
 
+    bndry = np.vstack([bndry, [0, 0]])
     patch, bndry = rotate(src, bndry, -info['rot'])
 
-    pos = np.array([info['pos']['x'], info['pos']['y']])
-    pos = pos * np.array([tx, ty])
+    pos = np.array([info['pos']['x'], info['pos']['y']]) * [tx, ty] - bndry[-1] + \
+        np.array([patch.shape[1], patch.shape[0]]) / 2
+    bndry = bndry[:-1]
 
-    M = cv2.getRotationMatrix2D((0, 0), -info['rot'], 1.)
-    center = -np.matmul(-center, M[:,:2].T)
-    pos = np.array([info['pos']['x']*tx, info['pos']['y']*ty]) + center
+    patch = fit(patch, bndry)
+    bndry = bndry - bndry.min(axis=0)
 
-    return patch[:,:,:3].astype(np.uint8), tar, bndry, pos.astype(int)
+    return patch.astype(np.uint8), tar, bndry.astype(int), pos.astype(int)
