@@ -37,7 +37,7 @@ FilePond.create(
     }
 );
 
-
+var has_image = false;
 $(document).ready(function () {
     console.log("in the function");
     setTimeout(checkFile, 500);
@@ -52,8 +52,13 @@ $(document).ready(function () {
                 console.log(data.success);
                 if (data.success == true) { // or whatever you want the response to be
                     $('#to_step2').show();
+                    if (has_image == false){
+                        clear_canvas();
+                        has_image = true;
+                    }
                 }
                 else {
+                    has_image = false;
                     $('#to_step2').hide();
                     setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this running too often
                 }

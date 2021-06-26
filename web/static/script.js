@@ -95,8 +95,8 @@ function draw_tar(tar_obj) {
 function start_konva(width, height) {
     stageW = width;
     stageH = height;
-    tar_obj.src = 'upload_images/dst_upload.jpg';
-    src_obj.src = 'upload_images/src_upload.jpg';
+    tar_obj.src = 'static/data/tar.png';
+    src_obj.src = 'static/data/patch.png';
     stage.add(layer);
 }
 
@@ -107,7 +107,9 @@ function finish_transform() {
         "pos": src_patch.getAbsolutePosition(),
         "rot": src_patch.getAbsoluteRotation(),
         "src_size": src_patch.size(),
-        "tar_size": tar_patch.size()
+        "tar_size": tar_patch.size(),
+        "cavs_width": canvas.width,
+        "cavs_height": canvas.height
     };
     $.ajax({
         // async: false,

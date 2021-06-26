@@ -48,7 +48,6 @@ function clear_canvas(){
     ctx = undefined;
     perimeter = new Array();
     complete = false;
-    document.getElementById('coordinates').value = '';
     start();
 }
 
@@ -76,13 +75,6 @@ function draw(end){
         complete = true;
     }
     ctx.stroke();
-
-    // print coordinates
-    if(perimeter.length == 0){
-        document.getElementById('coordinates').value = '';
-    } else {
-        document.getElementById('coordinates').value = JSON.stringify(perimeter);
-    }
 }
 
 function check_intersect(x,y){
@@ -155,17 +147,28 @@ function point_it(event) {
 
 function start(with_draw) {
     var img = new Image();
-    img.src = canvas.getAttribute('background');
+    canvas.width = window.innerWidth * 0.35;
+    canvas.height = 300;
 
     img.onload = function(){
-        canvas.width = img.width;
-        canvas.height = img.height;
+        var w = img.width;
+        var h = img.height;
+        if (img.width < canvas.width) {
+            canvas.width = img.width;
+            canvas.height = img.height;
+        } else {
+            h = h / w * canvas.width;
+            w = canvas.width;
+            canvas.height = h;
+        }
         ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, img.width, img.height);
+        ctx.drawImage(img, 0, 0, w, h);
         if(with_draw == true){
             draw(false);
         }
     }
+    img.src = 'static/data/src.png';
+    
 }
 
 async function send_vertices() {
@@ -177,7 +180,10 @@ async function send_vertices() {
     $.ajax({
         async: false,
         url: '/crop',
-        data: JSON.stringify(perimeter),
+        data: JSON.stringify({
+            "width": canvas.width, 
+            "height": canvas.height,
+            "perimeter": perimeter}),
         type: "POST",
         contentType: "application/json;charset=utf-8",
         success: function(res){},

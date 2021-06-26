@@ -6,7 +6,7 @@ import flask
 # Initializing new Flask instance. Find the html template in "templates".
 app = flask.Flask(__name__, template_folder='templates')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
-app.config['UPLOAD_FOLDER'] = 'upload_images'
+app.config['UPLOAD_FOLDER'] = 'static/data'
 
 
 # First route : Render the initial drawing template

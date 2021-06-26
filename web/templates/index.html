@@ -93,11 +93,9 @@
             </div>
         </div>
         <div class="row" style="height: 400px">
-            <!-- <canvas id="jPolygon" width="{{ jpoly_width }}" height="{{ jpoly_height }}" -->
             <div class="col">
-                <canvas id="jPolygon" width="100%" height="auto"
+                <canvas id="jPolygon"
                     style="cursor:crosshair" 
-                    background="{{ url_for('static', filename='src_upload.jpg') }}"
                     onmousedown="point_it(event)" oncontextmenu="return false;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
@@ -111,7 +109,7 @@
                 <button class="btn btn-primary" onclick="undo()">Undo</button>
                 <button class="btn btn-danger" onclick="clear_canvas()">Clear</button>
                 <button class="btn btn-success" onclick="send_vertices(); 
-                    start_konva({{ konva_width }}, {{ konva_height }})">Done</button>
+                    start_konva({{ konva_width }} {{ konva_height }})">Done</button>
                 <!-- <p><strong>Coordinates:</strong></p>
                 <textarea id="coordinates" disabled="disabled" style="width:300px; height:200px;"></textarea> -->
             </div>
@@ -122,8 +120,8 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='filepond_upload.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jPolygon.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='filepond_upload.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
     
