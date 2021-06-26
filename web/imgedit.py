@@ -53,7 +53,7 @@ def crop_src_patch(cors, width, height, dir_path='static/data',
     size (int, int): width, height
     """
     img = cv2.imread(os.path.join(dir_path, src_name))
-    bndry = np.array([[cor['x'], cor['y']] for cor in cors])
+    bndry = np.int32([[cor['x'], cor['y']] for cor in cors])
     img = crop_poly(img, bndry, width, height)
     cv2.imwrite(os.path.join(dir_path, patch_name), img)
 

@@ -53,7 +53,7 @@ $(document).ready(function () {
                 if (data.success == true) { // or whatever you want the response to be
                     $('#to_step2').show();
                     if (has_image == false){
-                        clear_canvas();
+                        // clear_canvas();
                         has_image = true;
                     }
                 }
