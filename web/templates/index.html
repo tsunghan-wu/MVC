@@ -69,25 +69,26 @@
         <div class="row" style="padding-top: 10vh">
             <div class="col">
                 <h3 class="feature-title" style="text-align: center;">Source Patch Selection</h3>
-                <p>Press <strong>Left Click</strong> to draw a point.</p>
-                <p><strong>CTRL+Click</strong> or <strong>Right Click</strong> to close the polygon.</p>
+                <p class="text">Press <strong>Left Click</strong> to draw a point.</p>
+                <p class="text"><strong>CTRL+Click</strong> or <strong>Right Click</strong> to close the polygon.</p>
             </div>
             <div class="col">
                 <h3 class="feature-title" style="text-align: center;">Target Position Decision</h3>
-                <p>Drag / Scale / Rotate the image patch to the desired position.</p>
-                <p>Click the "Processing &#8594;" button when the target position is determined.</p>
+                <p class="text">Drag / Scale / Rotate the image patch to the desired position.</p>
+                <p class="text">Click the "Processing &#8594;" button when the target position is determined.</p>
             </div>
         </div>
         <div class="row" style="height: 55vh">
             <div class="col">
-                <canvas id="jPolygon"
-                    style="cursor:crosshair" 
+                <canvas id="jPolygon" style="cursor:crosshair; margin: 0 auto; display: block" 
                     onmousedown="point_it(event)" oncontextmenu="return false;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
             </div>
-            <div class="col" id="konva">
+            <div class="col">
+                <div id="konva">
                 <!-- this is the target image -->
+                </div>
             </div>
         </div>
         <div class="row">

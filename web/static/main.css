@@ -127,3 +127,7 @@ img {
     box-shadow: none;
     display: none;
 }
+
+.text {
+    margin-left: 3vw;
+}

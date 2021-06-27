@@ -1,4 +1,4 @@
-var stageW = window.innerWidth * 0.4;
+var stageW = $('#konva').parent().width() * 0.9
 var stageH = 300;
 var stage = new Konva.Stage({
     container: 'konva',
@@ -96,6 +96,7 @@ function start_konva() {
     tar_obj.src = 'static/data/tar.png';
     src_obj.src = 'static/data/patch.png';
     stage.add(layer);
+    $('.konvajs-content').css("margin", "auto");
     $('#to_step3').removeClass('disabled');
 
 }

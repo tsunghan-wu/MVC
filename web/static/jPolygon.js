@@ -147,22 +147,12 @@ function point_it(event) {
 
 function start(with_draw) {
     var img = new Image();
-    canvas.width = window.innerWidth * 0.35;
-    canvas.height = 300;
+    canvas.width = canvas.parentElement.clientWidth * 0.8;
 
     img.onload = function(){
-        var w = img.width;
-        var h = img.height;
-        if (img.width < canvas.width) {
-            canvas.width = img.width;
-            canvas.height = img.height;
-        } else {
-            h = h / w * canvas.width;
-            w = canvas.width;
-            canvas.height = h;
-        }
+        canvas.height = canvas.width / img.width * img.height
         ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, w, h);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         if(with_draw == true){
             draw(false);
         }
