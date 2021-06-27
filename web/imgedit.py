@@ -42,8 +42,7 @@ def crop_poly(img, boundary, max_w, max_h, add_alpha=True, tight=True):
     return img
 
 
-def crop_src_patch(cors, width, height, dir_path='static/data', 
-                   src_name='src.png', patch_name='patch.png'):
+def crop_src_patch(fileID, cors, width, height, dir_path='static/data'):
     """Args:
     cors ([{'x': int, 'y':int}])
     width (int)
@@ -53,6 +52,9 @@ def crop_src_patch(cors, width, height, dir_path='static/data',
     Return:
     size (int, int): width, height
     """
+    src_name = f'src{fileID}.png'
+    patch_name = f'patch{fileID}.png'
+
     img = cv2.imread(os.path.join(dir_path, src_name))
     img = cv2.resize(img, (width, height))
     bndry = np.array([[cor['x'], cor['y']] for cor in cors])

@@ -5,19 +5,12 @@ var stage = new Konva.Stage({
     width: stageW,
     height: stageH,
 });
-var layer = new Konva.Layer();
+var layer;
 var src_patch;
 var tar_patch;
 
-var tar_obj = new Image();
-tar_obj.onload = function () {
-    draw_tar(this);
-};
-var src_obj = new Image();
-src_obj.onload = function () {
-    draw_src(this);
-};
-
+var tar_obj;
+var src_obj;
 
 function draw_src(src_obj) {
     src_patch = new Konva.Image({
@@ -93,8 +86,18 @@ function draw_tar(tar_obj) {
 
 
 function start_konva() {
-    tar_obj.src = 'static/data/tar.png';
-    src_obj.src = 'static/data/patch.png';
+    layer = new Konva.Layer();
+    tar_obj = new Image();
+    tar_obj.onload = function () {
+        draw_tar(this);
+    };
+    src_obj = new Image();
+    src_obj.onload = function () {
+        draw_src(this);
+    };
+    
+    tar_obj.src = 'static/data/tar' + tarID + '.png';
+    src_obj.src = 'static/data/patch' + srcID + '.png';
     stage.add(layer);
     $('.konvajs-content').css("margin", "auto");
     $('#to_step3').removeClass('disabled');
@@ -102,9 +105,18 @@ function start_konva() {
 }
 
 
+function destroy_konva() {
+    stage.destroyChildren();
+}
+
+var resID = '';
+
 function finish_transform() {
+    $('#result').hide()
     $('#loading').show()
     var data = {
+        'srcID': srcID,
+        'tarID': tarID,
         "perimeter": perimeter,
         "pos": src_patch.getAbsolutePosition(),
         "rot": src_patch.getAbsoluteRotation(),
@@ -119,9 +131,11 @@ function finish_transform() {
         data: JSON.stringify(data),
         type: "POST",
         contentType: "application/json;charset=utf-8",
-        success: function() {
+        success: function(res) {
+            resID = res;
             $('#loading').hide();
-            $('#result').attr("src", "static/data/result.png");  
+            $('#result').attr("src", "static/data/result"+res+".png");  
+            $('#result').show()
             $('#download').removeClass('disabled');
             $('#try_another').removeClass('disabled');
         },

@@ -42,3 +42,60 @@ function doScrolling(element, duration) {
     }
   })
 }
+
+function clear_result() {
+  if (resID.length > 0) {
+    $.ajax({
+      async: false,
+      url: '/clear_result',
+      data: JSON.stringify({
+          "srcID": srcID,
+          "resID": resID
+      }),
+      type: "POST",
+      contentType: "application/json;charset=utf-8",
+      success: function(res){},
+      error: function(xhr, ajaxOptions, thrownError){
+          console.log(xhr.status);
+          console.log(thrownError);
+      }
+    }); 
+  }
+  resID = '';
+}
+
+
+function clear() {
+  $.ajax({
+    url: '/clear',
+    data: JSON.stringify({
+        "srcID": srcID,
+        "tarID": tarID,
+        "resID": resID
+    }),
+    type: "POST",
+    contentType: "application/json;charset=utf-8",
+    success: function(res){},
+    error: function(xhr, ajaxOptions, thrownError){
+        console.log(xhr.status);
+        console.log(thrownError);
+    }
+  });
+  srcID = '';
+  tarID = '';
+  resID = '';
+}
+
+function restart() {
+  clear_result()
+  $('#to_step3').addClass('disabled');
+  $('#download').addClass('disabled');
+  destroy_canvas();
+  destroy_konva();
+  $("#result").hide();
+}
+
+
+window.onbeforeunload = function () {
+  clear();
+};

@@ -51,6 +51,10 @@ function clear_canvas(){
     start();
 }
 
+function destroy_canvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+
 function draw(end){
     ctx.lineWidth = 1;
     ctx.strokeStyle = "white";
@@ -157,7 +161,7 @@ function start(with_draw) {
             draw(false);
         }
     }
-    img.src = 'static/data/src.png';
+    img.src = 'static/data/src' + srcID + '.png';
     
 }
 
@@ -171,6 +175,7 @@ async function send_vertices() {
         async: false,
         url: '/crop',
         data: JSON.stringify({
+            "srcID": srcID,
             "width": canvas.width, 
             "height": canvas.height,
             "perimeter": perimeter}),

@@ -1,3 +1,6 @@
+var srcID = '';
+var tarID = '';
+
 // Get a reference to the file input element
 FilePond.registerPlugin(
     FilePondPluginFileValidateType,
@@ -19,7 +22,14 @@ FilePond.create(
         maxFileSize: '3MB',
         server: {
             url: './',
-            process: './upload_src'
+            process: {
+                url: './upload_src',
+                onload: function (res) {
+                    srcID = res;
+                    return res;
+                }
+            },
+            revert: './del_src',
         },
     }
 );
@@ -32,7 +42,14 @@ FilePond.create(
         maxFileSize: '3MB',
         server: {
             url: './',
-            process: './upload_dst',  // flask data processing app
+            process: {
+                url: './upload_dst',
+                onload: function (res) {
+                    tarID = res;
+                    return res;
+                }
+            },
+            revert: './del_dst',
         },
     }
 );
@@ -42,37 +59,31 @@ $(document).ready(function () {
     setTimeout(checkFile, 500);
 
     function checkFile() {
-        $.ajax({
-            url: './checkfile',
-            type: 'GET',
-            dataType: "json",
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(data.success);
-                if (data.success == true) { // or whatever you want the response to be
-                    $('#to_step2').removeClass('disabled');
-                }
-                else {
-                    if(!$('#to_step2').hasClass('disabled')){
-                        $('#to_step2').addClass('disabled');
-                    }
-                    setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this running too often
-                }
+        if (srcID.length > 0 && tarID.length > 0) {
+            $('#to_step2').removeClass('disabled'); 
+        } else {
+            if (!$('#to_step2').hasClass('disabled')) {
+                $('#to_step2').addClass('disabled');
             }
-        });
+            setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this  
+        }
+        // $.ajax({
+        //     url: './checkfile',
+        //     type: 'GET',
+        //     dataType: "json",
+        //     contentType: 'application/json',
+        //     success: function (data) {
+        //         console.log(data.success);
+        //         if (data.success == true) { // or whatever you want the response to be
+        //             $('#to_step2').removeClass('disabled');
+        //         }
+        //         else {
+        //             if(!$('#to_step2').hasClass('disabled')){
+        //                 $('#to_step2').addClass('disabled');
+        //             }
+        //             setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this running too often
+        //         }
+        //     }
+        // });
     };
 });
-
-
-function reset() {
-    var data = {
-        "rest": true,
-    };
-    $.ajax({
-        // async: false,
-        url: '/reset',
-        data: JSON.stringify(data),
-        type: "POST",
-        contentType: "application/json;charset=utf-8",
-    });
-};
