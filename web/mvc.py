@@ -102,24 +102,28 @@ class MVC_ClonerFast:
         return np.arccos(np.clip(cos, -1, 1))
 
     def solve_mvc(self, x, curve):
+        """In pure python,
+        for i in range(len(curve)):
+            v1, v2, v3 = shift[i-2], shift[i-1], shift[i]
+            norm1, norm2, norm3 = norms[i-2], norms[i-1], norms[i]
+            w = (np.tan(self.rad(v2, v1, norm2, norm1)/2) + 
+                np.tan(self.rad(v3, v2, norm3, norm2)/2)) / norm2
+            w[(norm1==0) | (norm2==0) | (norm3==0)] = 0
+            mvc[:, i] = w
+        """
         mvc = np.empty((len(x), len(curve)))
         shift = [cur - x for cur in curve]
         norms = [np.linalg.norm(v, axis=1) for v in shift]
-        for i in range(len(curve)):
-            v1 = shift[i-2]
-            v2 = shift[i-1]
-            v3 = shift[i]
-            norm1 = norms[i-2]
-            norm2 = norms[i-1]
-            norm3 = norms[i]
+        tans = [np.tan(self.rad(shift[i-1], shift[i], norms[i-1], norms[i])/2) \
+            for i in range(len(shift))]
 
-            w = (np.tan(self.rad(v2, v1, norm2, norm1)/2) + 
-                 np.tan(self.rad(v3, v2, norm3, norm2)/2)) / norm2
-            w[(norm1 == 0) | (norm2 == 0) | (norm3 == 0)] = 0
-            mvc[:,i] = w
+        mvc = (np.vstack([tans[-1], tans[:-1]]) + tans) / np.vstack([norms[-1], norms[:-1]])
+        true_divide_mask = np.stack([
+            (norms[i-2]==0) | (norms[i-1]==0) | (norms[i]==0) for i in range(len(norms))])
+        mvc[true_divide_mask] = 0
+        mvc = mvc.T # (len(x), len(curve))
 
         return mvc / mvc.sum(axis=1, keepdims=True)
-
 
     def count_diff(self, curve, translation, src_img, dst_img):
         curve_shft = curve + translation
