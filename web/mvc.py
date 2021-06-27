@@ -142,7 +142,7 @@ class MVC_ClonerFast:
         diff = self.count_diff(contours, translation, src_img, dst_img) # (contour, 3)
 
         mvc = self.solve_mvc(src_x, contours) # (pixel, contour)
-        r = (mvc[:, :, np.newaxis] * diff[np.newaxis, :, :]).sum(axis=1) # (pixel)
+        r = (mvc[:, :, np.newaxis] * diff[np.newaxis, :, :]).sum(axis=1) # (pixel, 3)
         dst_x = src_x + translation
 
         output = dst_img.copy()
