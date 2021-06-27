@@ -28,6 +28,7 @@ def crop_poly(img, boundary, max_w, max_h, add_alpha=True, tight=True):
     if h > max_h:
         img = cv2.resize(img, (int(max_h/h*w), max_h))
 
+    boundary = boundary.astype(np.int32)
     mask = np.zeros_like(img)
     mask = cv2.fillPoly(mask, [boundary], (255, 255, 255))
     img = img * mask.astype(bool)
@@ -89,7 +90,7 @@ def rotate(src, points, angle, scale=1.):
     ps = points - np.array([w*0.5, h*0.5])
     ps = np.matmul(ps, rot_mat[:,:2].T) + np.array([nw/2, nh/2])
 
-    return img, ps.round().astype(int)
+    return img, ps.round().astype(np.int32)
 
 
 def prepare(info, dir_path='static/data', src_name='src.png', 
@@ -133,4 +134,4 @@ def prepare(info, dir_path='static/data', src_name='src.png',
     patch = fit(patch, bndry)
     bndry = bndry - bndry.min(axis=0)
 
-    return patch.astype(np.uint8), tar, bndry.astype(int), pos.astype(int)
+    return patch.astype(np.uint8), tar, bndry.astype(np.int32), pos.astype(np.int32)

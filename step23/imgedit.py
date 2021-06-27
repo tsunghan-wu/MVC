@@ -28,6 +28,7 @@ def crop_poly(img, boundary, max_w, max_h, add_alpha=True, tight=True):
     if h > max_h:
         img = cv2.resize(img, (int(max_h/h*w), max_h))
 
+    boundary = boundary.astype(np.int32)
     mask = np.zeros_like(img)
     mask = cv2.fillPoly(mask, [boundary], (255, 255, 255))
     img = img * mask.astype(bool)
