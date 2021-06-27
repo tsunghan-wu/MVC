@@ -106,15 +106,15 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <button class="btn btn-primary" onclick="undo()">Undo</button>
-                <button class="btn btn-danger" onclick="clear_canvas()">Clear</button>
+            <div class="col" style="text-align: center">
+                <button class="btn btn-primary" onclick="undo()" style="margin-right: 10px; margin-left: 10px">Undo</button>
+                <button class="btn btn-danger" onclick="clear_canvas()" style="margin-right: 10px; margin-left: 10px">Clear</button>
                 <button class="btn btn-success" onclick="send_vertices(); 
-                    start_konva()">Done</button>
+                    start_konva()" style="margin-right: 10px; margin-left: 10px">Done</button>
                 <!-- <p><strong>Coordinates:</strong></p>
                 <textarea id="coordinates" disabled="disabled" style="width:300px; height:200px;"></textarea> -->
             </div>
-            <div class="col-auto">
+            <div class="col" style="text-align: right">
                 <div>
                     <button id="to_step3" class="btn btn-success disabled" onclick="finish_transform(); doScrolling('#step3', 500)">Processing &#8594;</button>
                 </div>
