@@ -86,7 +86,7 @@ body {
 
 .filepond--root,
 .filepond--root .filepond--drop-label {
-  height: 400px;
+  height: 60vh;
 }
 
 /* Adding cursor just works: */
