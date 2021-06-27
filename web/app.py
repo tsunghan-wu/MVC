@@ -19,10 +19,13 @@ def index():
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
     dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "tar.png")
+    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
     if os.path.exists(srcfname):
         os.remove(srcfname)
     if os.path.exists(dstfname):
         os.remove(dstfname)
+    if os.path.exists(resultfname):
+        os.remove(resultfname)
     return flask.render_template('index.html')
 
 
@@ -65,12 +68,37 @@ def crop():
 @app.route('/clone', methods=['POST'])
 def clone():
     src, tar, bndry, pos = prepare(flask.request.get_json())
-    output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2], 
-        pos, bndry)
+    output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2],
+                            pos, bndry)
 
     import cv2
-    cv2.imwrite('test.png', output)
+    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
+    cv2.imwrite(resultfname, output)
 
+    return ''
+
+
+@app.route('/checkresult', methods=['GET'])
+def checkresult():
+    print("checkresult", flush=True)
+    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
+    if os.path.exists(resultfname):
+        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+    else:
+        return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+
+
+@app.route('/reset', methods=['POST'])
+def reset():
+    srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
+    dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "tar.png")
+    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
+    if os.path.exists(srcfname):
+        os.remove(srcfname)
+    if os.path.exists(dstfname):
+        os.remove(dstfname)
+    if os.path.exists(resultfname):
+        os.remove(resultfname)
     return ''
 
 

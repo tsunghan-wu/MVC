@@ -106,3 +106,12 @@ body {
 .disabled:hover {
     cursor: default;
 }
+
+#result{
+    background-size: auto 100%;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
