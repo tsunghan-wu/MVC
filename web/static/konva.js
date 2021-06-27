@@ -102,6 +102,7 @@ function start_konva() {
 
 
 function finish_transform() {
+    $('#loading').show()
     var data = {
         "perimeter": perimeter,
         "pos": src_patch.getAbsolutePosition(),
@@ -117,6 +118,12 @@ function finish_transform() {
         data: JSON.stringify(data),
         type: "POST",
         contentType: "application/json;charset=utf-8",
+        success: function() {
+            $('#loading').hide();
+            $('#result').attr("src", "static/data/result.png");  
+            $('#download').removeClass('disabled');
+            $('#try_another').removeClass('disabled');
+        },
         error: function(xhr, ajaxOptions, thrownError){
             console.log(xhr.status);
             console.log(thrownError);

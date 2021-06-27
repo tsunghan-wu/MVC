@@ -25,7 +25,7 @@ body {
 }
 
 .header {
-    background-image: url('./header-background.jpg');
+    background-image: url('./assets/header-background.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -118,4 +118,12 @@ body {
 img {
     max-width: 100%;
     max-height: 100%;
+}
+
+#loading {
+    width: 3em;
+    height: 3em;
+    margin: auto;
+    box-shadow: none;
+    display: none;
 }

@@ -1,6 +1,7 @@
 import os
 import json
 import flask
+import cv2
 from imgedit import crop_src_patch, prepare
 from mvc import MVC_ClonerFast
 
@@ -71,7 +72,6 @@ def clone():
     output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2],
                             pos, bndry)
 
-    import cv2
     resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
     cv2.imwrite(resultfname, output)
 

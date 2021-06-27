@@ -42,4 +42,3 @@ function doScrolling(element, duration) {
     }
   })
 }
-
