@@ -62,3 +62,39 @@ $(document).ready(function () {
         });
     };
 });
+
+$(document).ready(function () {
+    setTimeout(checkResult, 500);
+
+    function checkResult() {
+        $.ajax({
+            url: './checkresult',
+            type: 'GET',
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.success == true) { // or whatever you want the response to be
+                    $('#result').attr("src", "static/data/result.png");  
+                    $('#download').removeClass('disabled');
+                    $('#try_another').removeClass('disabled');
+                }
+                else {
+                    setTimeout(checkResult, 500); // you can add a setTimeout if you don't want this running too often
+                }
+            }
+        });
+    };
+});
+
+function reset() {
+    var data = {
+        "rest": true,
+    };
+    $.ajax({
+        // async: false,
+        url: '/reset',
+        data: JSON.stringify(data),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+    });
+};
