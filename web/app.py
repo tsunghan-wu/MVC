@@ -1,7 +1,9 @@
 import os
-import json
-import flask
+import random
+
 import cv2
+import flask
+
 from imgedit import crop_src_patch, prepare
 from mvc import MVC_ClonerFast
 
@@ -54,9 +56,9 @@ def checkfile():
     srcfname = os.path.join(app.config['UPLOAD_FOLDER'], "src.png")
     dstfname = os.path.join(app.config['UPLOAD_FOLDER'], "tar.png")
     if os.path.exists(srcfname) and os.path.exists(dstfname):
-        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+        return flask.jsonify({'success': True})
     else:
-        return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+        return flask.jsonify({'success': False})
 
 
 @app.route('/crop', methods=['POST'])
@@ -72,10 +74,11 @@ def clone():
     output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2],
                             pos, bndry)
 
-    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
+    code = random.randint(0, 99)
+    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], f"result{code}.png")
     cv2.imwrite(resultfname, output)
 
-    return ''
+    return str(code)
 
 
 @app.route('/checkresult', methods=['GET'])
@@ -83,9 +86,9 @@ def checkresult():
     print("checkresult", flush=True)
     resultfname = os.path.join(app.config['UPLOAD_FOLDER'], "result.png")
     if os.path.exists(resultfname):
-        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+        return flask.jsonify({'success': True})
     else:
-        return json.dumps({'success': False}), 200, {'ContentType': 'application/json'}
+        return flask.jsonify({'success': False})
 
 
 @app.route('/reset', methods=['POST'])
