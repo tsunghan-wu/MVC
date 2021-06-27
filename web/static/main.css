@@ -91,12 +91,18 @@ body {
 
 /* Adding cursor just works: */
 .disabled {
-    cursor: not-allowed;
+    /* cursor: not-allowed; */
+    cursor: default;
     color: gray !important;
     background: transparent !important;
 }
 
 /* Makes link non-clickable: */
 .disabled:active {
+    cursor: default;
     pointer-events: none;
+}
+
+.disabled:hover {
+    cursor: default;
 }

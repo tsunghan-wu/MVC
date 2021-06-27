@@ -116,10 +116,13 @@
             </div>
             <div class="col-auto">
                 <div>
-                    <button id="to_step3" class="btn btn-success disabled" onclick="finish_transform()">Processing &#8594;</button>
+                    <button id="to_step3" class="btn btn-success disabled" onclick="finish_transform(); doScrolling('#step3', 500)">Processing &#8594;</button>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container features" id="step3" style="height: 100vh">
+        <!-- Get Final Result from backend -->
     </div>
     <script type="text/javascript" src="{{ url_for('static', filename='jPolygon.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='filepond_upload.js') }}"></script>
