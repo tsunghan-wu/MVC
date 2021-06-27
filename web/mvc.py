@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+from adaptmesh import triangulate
+import matplotlib
 
 
 class MVC_Cloner:
@@ -106,7 +108,7 @@ class MVC_ClonerFast:
         for i in range(len(curve)):
             v1, v2, v3 = shift[i-2], shift[i-1], shift[i]
             norm1, norm2, norm3 = norms[i-2], norms[i-1], norms[i]
-            w = (np.tan(self.rad(v2, v1, norm2, norm1)/2) + 
+            w = (np.tan(self.rad(v2, v1, norm2, norm1)/2) +
                 np.tan(self.rad(v3, v2, norm3, norm2)/2)) / norm2
             w[(norm1==0) | (norm2==0) | (norm3==0)] = 0
             mvc[:, i] = w
@@ -114,38 +116,51 @@ class MVC_ClonerFast:
         mvc = np.empty((len(x), len(curve)))
         shift = [cur - x for cur in curve]
         norms = [np.linalg.norm(v, axis=1) for v in shift]
-        tans = [np.tan(self.rad(shift[i-1], shift[i], norms[i-1], norms[i])/2) \
-            for i in range(len(shift))]
+        tans = [np.tan(self.rad(shift[i-1], shift[i], norms[i-1], norms[i]) / 2)
+                for i in range(len(shift))]
 
         mvc = (np.vstack([tans[-1], tans[:-1]]) + tans) / np.vstack([norms[-1], norms[:-1]])
         true_divide_mask = np.stack([
-            (norms[i-2]==0) | (norms[i-1]==0) | (norms[i]==0) for i in range(len(norms))])
+            (norms[i-2] == 0) | (norms[i-1] == 0) | (norms[i] == 0) for i in range(len(norms))])
         mvc[true_divide_mask] = 0
-        mvc = mvc.T # (len(x), len(curve))
+        mvc = mvc.T  # (len(x), len(curve))
 
         return mvc / mvc.sum(axis=1, keepdims=True)
 
     def count_diff(self, curve, translation, src_img, dst_img):
         curve_shft = curve + translation
-        D = [dst_img[trg_x[1], trg_x[0]] - src_img[src_x[1], src_x[0]] \
-            for src_x, trg_x in zip(curve, curve_shft)]
-        
+        D = [dst_img[trg_x[1], trg_x[0]] - src_img[src_x[1], src_x[0]]
+             for src_x, trg_x in zip(curve, curve_shft)]
+
         return np.stack(D)
+
+    def gen_mesh(self, contours):
+        m = triangulate(contours)
+        vertex = m.p.transpose()[:, ::-1].astype(np.float32)
+        face = m.t.transpose().astype(np.int32)
+        return vertex, face
 
     def process(self, src_img, dst_img, src_center, dst_center, curve):
         translation = (dst_center - src_center)
         src_x, contours = self.preprocess(src_img, curve)
+        vertex, face = self.gen_mesh(contours)   # vertex: (N, 2) --> Y, X
 
         src_img = src_img.astype(np.float) / 255
         dst_img = dst_img.astype(np.float) / 255
 
-        diff = self.count_diff(contours, translation, src_img, dst_img) # (contour, 3)
+        diff = self.count_diff(contours, translation, src_img, dst_img)  # (contour, 3)
 
-        mvc = self.solve_mvc(src_x, contours) # (pixel, contour)
-        r = (mvc[:, :, np.newaxis] * diff[np.newaxis, :, :]).sum(axis=1) # (pixel, 3)
+        mvc = self.solve_mvc(vertex, contours)  # (pixel, contour)
+        r = (mvc[:, :, np.newaxis] * diff[np.newaxis, :, :]).sum(axis=1)  # (pixel, 3)
         dst_x = src_x + translation
 
         output = dst_img.copy()
-        output[(dst_x[:, 1], dst_x[:, 0])] = src_img[(src_x[:, 1], src_x[:, 0])] + r
+        dst_vertex = vertex + translation
+        dst_color = cv2.remap(src_img, vertex[:, 1], vertex[:, 0], cv2.INTER_LANCZOS4).squeeze(1) + r
+        triang = matplotlib.tri.Triangulation(dst_vertex[:, 1], dst_vertex[:, 0], face)
+        for c in range(3):
+            interp_lin = matplotlib.tri.LinearTriInterpolator(triang, dst_color[:, c])
+            zi_lin = interp_lin(src_x[:, 1], src_x[:, 0])
+            output[dst_x[:, 1], dst_x[:, 0], c] = zi_lin
 
         return (np.clip(output, 0.0, 1.0) * 255).astype(np.uint8)
