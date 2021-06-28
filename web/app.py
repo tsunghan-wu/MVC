@@ -105,7 +105,7 @@ def clone():
                             pos, bndry)
 
     fileID = random.randint(0, 99)
-    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], f"result{fileID}.png")
+    resultfname = os.path.join(app.config['UPLOAD_FOLDER'], f"result{fileID:02d}.png")
     cv2.imwrite(resultfname, output)
 
     return f'{fileID:02d}'
