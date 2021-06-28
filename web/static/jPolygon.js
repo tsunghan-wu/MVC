@@ -168,9 +168,8 @@ function start(with_draw) {
 async function send_vertices() {
     if (!complete) {
         alert('Please close the selection!');
-        return;
+        return false;
     }
-    var patch_size = [0, 0];
     $.ajax({
         async: false,
         url: '/crop',
@@ -187,5 +186,5 @@ async function send_vertices() {
             console.log(thrownError);
         }
     });
-    return patch_size;
+    return true;
 }

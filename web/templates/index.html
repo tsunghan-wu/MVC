@@ -62,7 +62,7 @@
         </div>
         <div class="row float-right mt-3 mb-3">
         <button class="btn btn-outline-success disabled" id="to_step2" type="button" 
-            onclick="clear_canvas(); doScrolling('#step2', 500)">Next Step &#8594;</button>
+            onclick="clear_canvas(); doScrolling('#step2', 500)">Next &#8594;</button>
         </div>
     </div>
     <div class="container features" id="step2" style="height: 100vh">
@@ -75,7 +75,7 @@
             <div class="col">
                 <h3 class="feature-title" style="text-align: center;">Target Position Decision</h3>
                 <p class="text">Drag / Scale / Rotate the image patch to the desired position.</p>
-                <p class="text">Click the "Processing &#8594;" button when the target position is determined.</p>
+                <p class="text">Click <strong>Clone &#8594;</strong> when the target position is determined.</p>
             </div>
         </div>
         <div class="row" style="height: 55vh">
@@ -95,8 +95,8 @@
             <div class="col" style="text-align: center">
                 <button class="btn btn-primary" onclick="undo()" style="margin-right: 10px; margin-left: 10px">Undo</button>
                 <button class="btn btn-danger" onclick="clear_canvas()" style="margin-right: 10px; margin-left: 10px">Clear</button>
-                <button class="btn btn-success" onclick="send_vertices(); 
-                    start_konva()" style="margin-right: 10px; margin-left: 10px">Done</button>
+                <button class="btn btn-success" onclick="send_vertices().then((value) => {if (value) start_konva();})" 
+                style="margin-right: 10px; margin-left: 10px">Done</button>
                 <!-- <p><strong>Coordinates:</strong></p>
                 <textarea id="coordinates" disabled="disabled" style="width:300px; height:200px;"></textarea> -->
             </div>
@@ -104,7 +104,7 @@
                 <div>
                     <button id="to_step3" class="btn btn-success disabled" 
                     onclick="clear_result(); finish_transform(); doScrolling('#step3', 500)">
-                    Processing &#8594;</button>
+                    Clone &#8594;</button>
                 </div>
             </div>
         </div>

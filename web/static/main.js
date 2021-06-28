@@ -87,6 +87,7 @@ function clear() {
 }
 
 function restart() {
+  complete = false;
   clear_result()
   $('#to_step3').addClass('disabled');
   $('#download').addClass('disabled');
