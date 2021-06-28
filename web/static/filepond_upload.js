@@ -54,38 +54,20 @@ var dst_pond_obj = FilePond.create(
     }
 );
 
+function checkFile() {
+    if (srcID.length > 0 && tarID.length > 0) {
+        $('#to_step2').removeClass('disabled'); 
+    } else {
+        if (!$('#to_step2').hasClass('disabled')) {
+            $('#to_step2').addClass('disabled');
+        }
+        setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this  
+    }
+};
 $(document).ready(function () {
     console.log("in the function");
     setTimeout(checkFile, 500);
 
-    function checkFile() {
-        if (srcID.length > 0 && tarID.length > 0) {
-            $('#to_step2').removeClass('disabled'); 
-        } else {
-            if (!$('#to_step2').hasClass('disabled')) {
-                $('#to_step2').addClass('disabled');
-            }
-            setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this  
-        }
-        // $.ajax({
-        //     url: './checkfile',
-        //     type: 'GET',
-        //     dataType: "json",
-        //     contentType: 'application/json',
-        //     success: function (data) {
-        //         console.log(data.success);
-        //         if (data.success == true) { // or whatever you want the response to be
-        //             $('#to_step2').removeClass('disabled');
-        //         }
-        //         else {
-        //             if(!$('#to_step2').hasClass('disabled')){
-        //                 $('#to_step2').addClass('disabled');
-        //             }
-        //             setTimeout(checkFile, 500); // you can add a setTimeout if you don't want this running too often
-        //         }
-        //     }
-        // });
-    };
 });
 
 function remove_frontend(){
@@ -93,8 +75,6 @@ function remove_frontend(){
     src_pond_obj.removeFiles();
     dst_pond_obj.removeFiles();
     srcID = '';
-    dstID = '';
-    if (!$('#to_step2').hasClass('disabled')) {
-        $('#to_step2').addClass('disabled');
-    }
+    tarID = '';
+    setTimeout(checkFile, 500);
 }
