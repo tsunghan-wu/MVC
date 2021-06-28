@@ -14,7 +14,7 @@ conda env create -f environment.yml
 ### Run the App
 
 ```bash
-flask run --host=<ip> --port=<desired-port>
+flask run --host=<IP> --port=<desired-port>
 ```
 
-Then, open the browser and enjoy it on http://\<ip\>:\<port\>.
+Then, open the browser and enjoy it on http://\<IP\>:\<port\>.
