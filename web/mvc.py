@@ -136,8 +136,8 @@ class MVC_ClonerFast:
 
     def gen_mesh(self, contours):
         m = triangulate(contours)
-        vertex = m.p.transpose()[:, ::-1].astype(np.float32)
-        face = m.t.transpose().astype(np.int32)
+        vertex = np.swapaxes(m.p, 0, 1).astype(np.float32)
+        face = np.swapaxes(m.t, 0, 1).astype(np.int32)
         return vertex, face
 
     def process(self, src_img, dst_img, src_center, dst_center, curve):
@@ -156,11 +156,12 @@ class MVC_ClonerFast:
 
         output = dst_img.copy()
         dst_vertex = vertex + translation
-        dst_color = cv2.remap(src_img, vertex[:, 1], vertex[:, 0], cv2.INTER_LANCZOS4).squeeze(1) + r
+        dst_color = cv2.remap(src_img, vertex[:, 0], vertex[:, 1], cv2.INTER_LANCZOS4).squeeze(1) + r
+        np.save("result.npy", dst_color)
         triang = matplotlib.tri.Triangulation(dst_vertex[:, 1], dst_vertex[:, 0], face)
         for c in range(3):
             interp_lin = matplotlib.tri.LinearTriInterpolator(triang, dst_color[:, c])
-            zi_lin = interp_lin(src_x[:, 1], src_x[:, 0])
+            zi_lin = interp_lin(dst_x[:, 1], dst_x[:, 0])
             output[dst_x[:, 1], dst_x[:, 0], c] = zi_lin
 
         return (np.clip(output, 0.0, 1.0) * 255).astype(np.uint8)
