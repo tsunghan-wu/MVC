@@ -95,6 +95,7 @@ function restart() {
   destroy_canvas();
   destroy_konva();
   $("#result").hide();
+  $('#result_src').attr("href", "static/data/result.png");
 }
 
 

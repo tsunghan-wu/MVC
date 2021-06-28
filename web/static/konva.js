@@ -140,6 +140,7 @@ function finish_transform(fast) {
             $('#result').removeAttr('src');
             $('#result').attr("src", "static/data/result"+res+".png");  
             $('#result').show()
+            $('#result_src').attr("href", "static/data/result"+res+".png")
             $('#download').removeClass('disabled');
             $('#try_another').removeClass('disabled');
         },
