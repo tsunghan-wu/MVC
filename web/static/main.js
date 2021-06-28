@@ -90,6 +90,7 @@ function restart() {
   complete = false;
   clear_result()
   $('#to_step3').addClass('disabled');
+  $('#to_step3_fast').addClass('disabled');
   $('#download').addClass('disabled');
   destroy_canvas();
   destroy_konva();

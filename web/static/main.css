@@ -112,11 +112,13 @@ body {
 }
 
 #result{
-    background-size: auto 100%;
+    background-size: auto auto;
     display: none;
 }
 
 img {
+    width: auto;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
 }

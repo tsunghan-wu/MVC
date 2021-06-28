@@ -101,6 +101,7 @@ function start_konva() {
     stage.add(layer);
     $('.konvajs-content').css("margin", "auto");
     $('#to_step3').removeClass('disabled');
+    $('#to_step3_fast').removeClass('disabled');
 
 }
 
@@ -111,9 +112,10 @@ function destroy_konva() {
 
 var resID = '';
 
-function finish_transform() {
+function finish_transform(fast) {
     $('#result').hide()
     $('#loading').show()
+    var method = (fast) ? ('fast') : ('vanilla');
     var data = {
         'srcID': srcID,
         'tarID': tarID,
@@ -123,7 +125,8 @@ function finish_transform() {
         "src_size": src_patch.size(),
         "tar_size": tar_patch.size(),
         "cavs_width": canvas.width,
-        "cavs_height": canvas.height
+        "cavs_height": canvas.height,
+        "method": method
     };
     $.ajax({
         // async: false,
@@ -134,6 +137,7 @@ function finish_transform() {
         success: function(res) {
             resID = res;
             $('#loading').hide();
+            $('#result').removeAttr('src');
             $('#result').attr("src", "static/data/result"+res+".png");  
             $('#result').show()
             $('#download').removeClass('disabled');
