@@ -1,0 +1,199 @@
+body {
+    padding: 0;
+    margin: 0;
+    background: #e0e0e0;
+}
+.navbar {
+    background:#5296aa;
+}
+.nav-link,
+.navbar-brand {
+    color: #fff;
+    cursor: pointer;
+}
+.navbar-brand:hover {
+    color: #2c4f5a;
+}
+.nav-link {
+    margin-right: 1em !important;
+}
+.nav-link:hover {
+    color: #2c4f5a;
+}
+.navbar-collapse {
+    justify-content: flex-end;
+}
+
+.header {
+    background-image: url('./assets/header-background.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.description {
+    left: 50%;
+    position: absolute;
+    top: 45%;
+    transform: translate(-50%, -55%);
+    text-align: center;
+}
+.description h1 {
+    color: #99dff5;
+    font-weight: bold;
+}
+.description p {
+    color: #fff;
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.description button {
+    border:1px solid #5296aa;
+    background:#5296aa;
+    border-radius: 0;
+    color:#fff;
+}
+.description button:hover {
+    border:1px solid #fff;
+    background:#fff;
+    color:#5296aa;
+}
+
+.features {
+    margin: 4em auto;
+    padding: 1em;
+    position: relative;
+}
+.feature-title {
+    color: #2b4c57;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    /* text-transform: uppercase; */
+}
+.features img {
+    -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    margin-bottom: 16px;
+}
+
+.filepond--root,
+.filepond--root .filepond--drop-label {
+  height: 60vh;
+}
+
+/* Adding cursor just works: */
+.disabled {
+    /* cursor: not-allowed; */
+    cursor: default;
+    color: gray !important;
+    background: transparent !important;
+}
+
+/* Makes link non-clickable: */
+.disabled:active {
+    cursor: default;
+    pointer-events: none;
+}
+
+.disabled:hover {
+    cursor: default;
+}
+
+#result{
+    background-size: auto auto;
+    display: none;
+}
+
+img {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#loading {
+    width: 3em;
+    height: 3em;
+    margin: auto;
+    box-shadow: none;
+    display: none;
+}
+
+.text {
+    margin-left: 3vw;
+}
+
+.btn-primary {
+    background-color: #3bb6db;
+    border-color: #3bb6db;
+}
+.btn-primary.disabled {
+    border-color: #3bb6db;
+}
+.btn-danger {
+    background-color: #d42467;
+    border-color: #d42467;
+}
+.btn-success {
+    background-color: #24ad79;
+    border-color: #24ad79;
+}
+.btn-success.disabled {
+    border-color: #24ad79;
+}
+.btn-outline-success {
+    color: #24ad79; 
+    border-color: #24ad79;
+}
+
+.btn-primary:hover {
+    background-color: #2e90ad;
+    border-color: #2e90ad;
+}
+.btn-danger:hover {
+    background-color: #ac1e55;
+    border-color: #ac1e55;
+
+}
+.btn-success:hover {
+    background-color: #197753;
+    border-color: #197753;
+}
+.btn-outline-success:hover {
+    background-color: #24ad79;
+    border-color: #24ad79;
+}
+.btn-primary.disabled:hover {
+    border-color: #3bb6db;
+}
+.btn-success.disabled:hover {
+    border-color: #24ad79;
+}
+
+.fa{
+    color: #E90606;
+    margin: 0 3px;
+    font-size: 15px;
+    animation: pound .35s infinite alternate;
+    -webkit-animation: pound .35s infinite alternate;
+}
+
+@-webkit-keyframes pound {
+  to {
+    transform: scale(1.1); } }
+
+@keyframes pound {
+  to {
+    transform: scale(1.1); } }
