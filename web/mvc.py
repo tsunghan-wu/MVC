@@ -64,7 +64,7 @@ class MVC_Cloner:
         src_mask = np.zeros(src_image.shape, src_image.dtype)
         cv2.fillPoly(src_mask, [curve], (255, 255, 255))
         src_mask = cv2.cvtColor(src_mask, cv2.COLOR_BGR2GRAY)
-        contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         contours = contours[0].squeeze(1)
         src_image = src_image.astype(np.float32) / 255
         dst_image = dst_image.astype(np.float32) / 255
@@ -84,7 +84,7 @@ class MVC_ClonerFast:
     def __init__(self):
         self.adaptive_mesh = False
 
-    def preprocess(self, src_img, curve):
+    def preprocess(self, src_img, curve, sampling=True):
         if self.adaptive_mesh is False:
             src_mask = np.zeros_like(src_img)
             cv2.fillPoly(src_mask, [curve], (255, 255, 255))
@@ -92,8 +92,11 @@ class MVC_ClonerFast:
 
             kernel = np.ones((5, 5), np.uint8)
             src_mask = cv2.erode(src_mask, kernel, iterations=1)
-
-            contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            if sampling:
+                flag = cv2.CHAIN_APPROX_SIMPLE
+            else:
+                flag = cv2.CHAIN_APPROX_NONE
+            contours, hier = cv2.findContours(src_mask, cv2.RETR_TREE, flag)
             contours = contours[0].squeeze(1)
             coord = cv2.findNonZero(src_mask).squeeze(axis=1)
 
@@ -135,7 +138,7 @@ class MVC_ClonerFast:
         return np.stack(D)
 
     def gen_mesh(self, contours):
-        m = triangulate(contours)
+        m = triangulate(contours, quality=0.99, max_refloops=30)
         vertex = np.swapaxes(m.p, 0, 1).astype(np.float32)
         face = np.swapaxes(m.t, 0, 1).astype(np.int32)
         return vertex, face
@@ -143,6 +146,24 @@ class MVC_ClonerFast:
     def process(self, src_img, dst_img, src_center, dst_center, curve):
         translation = (dst_center - src_center)
         src_x, contours = self.preprocess(src_img, curve)
+
+        src_img = src_img.astype(np.float) / 255
+        dst_img = dst_img.astype(np.float) / 255
+
+        diff = self.count_diff(contours, translation, src_img, dst_img)  # (contour, 3)
+
+        mvc = self.solve_mvc(src_x, contours)  # (pixel, contour)
+        r = (mvc[:, :, np.newaxis] * diff[np.newaxis, :, :]).sum(axis=1)  # (pixel, 3)
+        dst_x = src_x + translation
+
+        output = dst_img.copy()
+        output[(dst_x[:, 1], dst_x[:, 0])] = src_img[(src_x[:, 1], src_x[:, 0])] + r
+
+        return (np.clip(output, 0.0, 1.0) * 255).astype(np.uint8)
+
+    def adaptive_process(self, src_img, dst_img, src_center, dst_center, curve):
+        translation = (dst_center - src_center)
+        src_x, contours = self.preprocess(src_img, curve, sampling=False)
         vertex, face = self.gen_mesh(contours)   # vertex: (N, 2) --> Y, X
 
         src_img = src_img.astype(np.float) / 255
@@ -157,7 +178,6 @@ class MVC_ClonerFast:
         output = dst_img.copy()
         dst_vertex = vertex + translation
         dst_color = cv2.remap(src_img, vertex[:, 0], vertex[:, 1], cv2.INTER_LANCZOS4).squeeze(1) + r
-        np.save("result.npy", dst_color)
         triang = matplotlib.tri.Triangulation(dst_vertex[:, 1], dst_vertex[:, 0], face)
         for c in range(3):
             interp_lin = matplotlib.tri.LinearTriInterpolator(triang, dst_color[:, c])
