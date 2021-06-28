@@ -1,10 +1,7 @@
-import glob
 import os
 import random
-
 import cv2
 import flask
-from flask.scaffold import F
 
 from imgedit import crop_src_patch, prepare
 from mvc import MVC_ClonerFast
@@ -41,7 +38,6 @@ def upload_src():
     fileID = f'{random.randint(0, 99):02d}'
     filename = os.path.join(app.config['UPLOAD_FOLDER'], f"src{fileID}.png")
     file.save(filename)
-    
     return fileID
 
 
@@ -65,7 +61,7 @@ def delete(dtype, fileID):
     else:
         print(name, "is not existed")
 
- 
+
 @app.route('/del_src', methods=['DELETE'])
 def del_src():
     delete('src', flask.request.data.decode())
@@ -100,7 +96,7 @@ def crop():
 def clone():
     info = flask.request.get_json()
     src, tar, bndry, pos = prepare(info, src_name=f"src{info['srcID']}.png",
-        patch_name=f"patch{info['srcID']}.png", tar_name=f"tar{info['tarID']}.png")
+                                   patch_name=f"patch{info['srcID']}.png", tar_name=f"tar{info['tarID']}.png")
     if info['method'] == 'vanilla':
         output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2],
                                 pos, bndry)
@@ -134,8 +130,8 @@ def clear_result():
 @app.route('/clear', methods=['POST'])
 def clear():
     data = flask.request.get_json()
-    for dtype, fileID in zip(['src', 'patch', 'tar', 'result'], 
-        [data['srcID'], data['srcID'], data['tarID'], data['resID']]):
+    for dtype, fileID in zip(['src', 'patch', 'tar', 'result'],
+                             [data['srcID'], data['srcID'], data['tarID'], data['resID']]):
         delete(dtype, fileID)
     return ''
 
