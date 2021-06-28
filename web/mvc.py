@@ -145,7 +145,7 @@ class MVC_ClonerFast:
 
     def process(self, src_img, dst_img, src_center, dst_center, curve):
         translation = (dst_center - src_center)
-        src_x, contours = self.preprocess(src_img, curve)
+        src_x, contours = self.preprocess(src_img, curve, sampling=True)
 
         src_img = src_img.astype(np.float) / 255
         dst_img = dst_img.astype(np.float) / 255
