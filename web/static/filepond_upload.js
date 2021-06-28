@@ -15,7 +15,7 @@ FilePond.registerPlugin(
 
 // Select the file input and use 
 src_pond = document.querySelector('#src_img');
-FilePond.create(
+var src_pond_obj = FilePond.create(
     src_pond,
     {
         allowMultiple:false,
@@ -35,7 +35,7 @@ FilePond.create(
 );
 
 dst_pond = document.querySelector('#dst_img');
-FilePond.create(
+var dst_pond_obj = FilePond.create(
     dst_pond,
     {
         allowMultiple:false,
@@ -87,3 +87,14 @@ $(document).ready(function () {
         // });
     };
 });
+
+function remove_frontend(){
+    console.log("remove front end!");
+    src_pond_obj.removeFiles();
+    dst_pond_obj.removeFiles();
+    srcID = '';
+    dstID = '';
+    if (!$('#to_step2').hasClass('disabled')) {
+        $('#to_step2').addClass('disabled');
+    }
+}
