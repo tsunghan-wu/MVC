@@ -101,9 +101,12 @@ def clone():
     info = flask.request.get_json()
     src, tar, bndry, pos = prepare(info, src_name=f"src{info['srcID']}.png",
         patch_name=f"patch{info['srcID']}.png", tar_name=f"tar{info['tarID']}.png")
-    output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2],
-                            pos, bndry)
-
+    if info['method'] == 'vanilla':
+        output = cloner.process(src, tar, [src.shape[1]//2, src.shape[0]//2],
+                                pos, bndry)
+    elif info['method'] == 'fast':
+        output = cloner.adaptive_process(src, tar, [src.shape[1]//2, src.shape[0]//2],
+                                         pos, bndry)
     fileID = random.randint(0, 99)
     resultfname = os.path.join(app.config['UPLOAD_FOLDER'], f"result{fileID:02d}.png")
     cv2.imwrite(resultfname, output)
