@@ -123,9 +123,9 @@
             </div>
         </div>
     </div>
-    <div class="container features" id="step3" style="height: 100vh">
+    <div class="container features" id="step3" style="height: 80vh">
         <!-- Get Final Result from backend -->
-        <div class="row justify-content-center" style="padding-top: 10vh">
+        <div class="row justify-content-center" style="padding-top: 3vh">
             <h1 class="feature-title" style="text-align: center">Result Image</h1>
         </div>
         <div class="row justify-content-center" style="height: 60vh">
@@ -133,7 +133,7 @@
             <img id="result">
             <!-- Show Image -->
         </div>
-        <div class="row justify-content-center mt-3">
+        <div class="row justify-content-center mt-3" style="height: 10vh">
             <a id="result_src" href="static/data/result.png" download>
                 <button id="download" class="btn btn-primary disabled" style="margin: 3vh 1vw; width: 6.5em">
                     Download</button>
@@ -142,12 +142,12 @@
                 <button id="restart" class="btn btn-danger" style="margin: 3vh 1vw; width: 6.5em"
                 onclick="doScrolling('#step1', 500); restart();">Restart</button>
             </div>
-            
         </div>
     </div>
-    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05); height: 10vh">
         Made with <i class="fa fa-heart pulse"></i> by Hsin-Ying Lee and Tsung-Han Wu in 2021
-  </div>
+    </div>
+
     <script src="https://unpkg.com/konva@8.0.4/konva.min.js"></script>
     <script src="{{ url_for('static', filename='filepond_upload.js') }}"></script>
     <script src="{{ url_for('static', filename='jPolygon.js') }}"></script>
