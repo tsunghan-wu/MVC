@@ -17,4 +17,4 @@ conda env create -f environment.yml
 flask run --host=<ip> --port=<desired-port>
 ```
 
-Then, open the browser and enjoy it on http://<ip>:<port>.
+Then, open the browser and enjoy it on http://\<ip\>:\<port\>.
